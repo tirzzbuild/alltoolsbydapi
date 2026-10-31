@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ULTIMATE TOOLS PRO</title>
+    <style>
+        /* --- RESET & VARIABLES --- */
+        :root {
+            --primary: #00d2ff;
+            --secondary: #3a7bd5;
+            --accent: #ff0099;
+            --glass: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text: #ffffff;
+            --bg-dark: #0f0c29;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* --- LOGIN SCREEN --- */
+        #auth-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            background: rgba(0,0,0,0.6);
+        }
+
+        .login-card {
+            background: var(--glass);
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        .login-card h1 { margin-bottom: 20px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; background: linear-gradient(to right, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        input, select {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus { border-color: var(--primary); box-shadow: 0 0 10px var(--primary); }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 12px;
+            border: none;
+            background: linear-gradient(90deg, var(--secondary), var(--primary));
+            color: white;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 210, 255, 0.4);
+            transition: 0.3s;
+        }
+
+        button:active { transform: scale(0.98); }
+        .btn-outline { background: transparent; border: 1px solid var(--glass-border); box-shadow: none; margin-top: 10px; }
+
+        /* --- DASHBOARD --- */
+        #dashboard { display: none; padding: 20px; max-width: 1200px; margin: 0 auto; }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: var(--glass);
+            border-radius: 15px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .user-profile { display: flex; align-items: center; gap: 15px; }
+        .avatar { width: 50px; height: 50px; background: linear-gradient(45deg, var(--accent), var(--primary)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+        
+        .badge { padding: 5px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; text-transform: uppercase; }
+        .badge-owner { background: gold; color: black; box-shadow: 0 0 10px gold; }
+        .badge-member { background: var(--secondary); color: white; }
+
+        /* --- SEARCH BAR --- */
+        .search-container { margin-bottom: 20px; }
+        
+        /* --- TOOLS GRID --- */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 15px;
+            padding-bottom: 50px;
+        }
+
+        .tool-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tool-card:hover { transform: translateY(-5px); background: rgba(255,255,255,0.15); border-color: var(--primary); }
+        .tool-icon { font-size: 2.5rem; margin-bottom: 10px; display: block; filter: drop-shadow(0 0 5px rgba(255,255,255,0.5)); }
+        .tool-title { font-size: 0.9rem; font-weight: 600; }
+        
+        /* --- MODAL POPUP --- */
+        #modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: #1a1a2e;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid var(--primary);
+            box-shadow: 0 0 30px rgba(0, 210, 255, 0.2);
+            position: relative;
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #aaa; }
+        .result-area { background: #000; padding: 15px; border-radius: 10px; margin-top: 15px; font-family: monospace; color: #0f0; min-height: 50px; word-break: break-all; border: 1px solid #333; }
+
+        /* --- FOOTER --- */
+        .footer { text-align: center; padding: 20px; color: #aaa; font-size: 0.8rem; }
+    </style>
+</head>
+<body>
+
+    <!-- LOGIN SCREEN -->
+    <div id="auth-screen">
+        <div class="login-card">
+            <h1>ULTIMATE TOOLS</h1>
+            <p style="margin-bottom: 20px; color: #ccc;">Premium Access Panel</p>
+            
+            <div id="login-form">
+                <input type="text" id="login-user" placeholder="Username">
+                <input type="password" id="login-pass" placeholder="Password">
+                <button onclick="handleLogin()">LOGIN</button>
+                <button class="btn-outline" onclick="toggleAuth('register')">Belum punya akun? Register</button>
+            </div>
+
+            <div id="register-form" style="display: none;">
+                <input type="text" id="reg-user" placeholder="Username Baru">
+                <input type="password" id="reg-pass" placeholder="Password Baru">
+                <button onclick="handleRegister()">DAFTAR SEKARANG</button>
+                <button class="btn-outline" onclick="toggleAuth('login')">Sudah punya akun? Login</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="dashboard">
+        <div class="header">
+            <div class="user-profile">
+                <div class="avatar">👤</div>
+                <div>
+                    <h3 id="display-name">User</h3>
+                    <span id="display-role" class="badge">Member</span>
+                </div>
+            </div>
+            <button onclick="logout()" style="width: auto; padding: 10px 20px; margin: 0; background: #ef4444;">Logout</button>
+        </div>
+
+        <div class="search-container">
+            <input type="text" id="search-tool" placeholder="🔍 Cari tools (contoh: ML, FF, TikTok)..." onkeyup="filterTools()">
+        </div>
+
+        <div class="tools-grid" id="tools-container">
+            <!-- Tools will be injected here by JS -->
+        </div>
+
+        <div class="footer">
+            &copy; 2026 Ultimate Tools Pro. Created for Dio.
+        </div>
+    </div>
+
+    <!-- MODAL FOR TOOLS -->
+    <div id="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <h2 id="modal-title" style="color: var(--primary); margin-bottom: 15px;">Tool Name</h2>
+            <div id="modal-body">
+                <!-- Dynamic Content -->
+            </div>
+            <div id="modal-result" class="result-area" style="display:none;"></div>
+        </div>
+    </div>
+
+    <script>
+        // --- DATA & CONFIG ---
+        const OWNER_USER = "Dio";
+        const OWNER_PASS = "mbud";
+        
+        // Database Users (Simulated)
+        let users = JSON.parse(localStorage.getItem('ut_users')) || [];
+
+        // --- AUTH SYSTEM ---
+        function toggleAuth(type) {
+            document.getElementById('login-form').style.display = type === 'login' ? 'block' : 'none';
+            document.getElementById('register-form').style.display = type === 'register' ? 'block' : 'none';
+        }
+
+        function handleRegister() {
+            const u = document.getElementById('reg-user').value;
+            const p = document.getElementById('reg-pass').value;
+            
+            if(!u || !p) return alert("Isi semua data!");
+            if(u === OWNER_USER) return alert("Username ini khusus Owner!");
+            
+            const exists = users.find(user => user.username === u);
+            if(exists) return alert("Username sudah dipakai!");
+
+            users.push({ username: u, password: p, role: 'member' });
+            localStorage.setItem('ut_users', JSON.stringify(users));
+            alert("Registrasi Berhasil! Silakan Login.");
+            toggleAuth('login');
+        }
+
+        function handleLogin() {
+            const u = document.getElementById('login-user').value;
+            const p = document.getElementById('login-pass').value;
+
+            // Check Owner
+            if (u === OWNER_USER && p === OWNER_PASS) {
+                loadDashboard(u, 'owner');
+                return;
+            }
+
+            // Check Member
+            const user = users.find(user => user.username === u && user.password === p);
+            if (user) {
+                loadDashboard(user.username, 'member');
+            } else {
+                alert("Username atau Password salah!");
+            }
+        }
+
+        function loadDashboard(username, role) {
+            document.getElementById('auth-screen').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+            
+            document.getElementById('display-name').innerText = username;
+            const roleBadge = document.getElementById('display-role');
+            roleBadge.innerText = role === 'owner' ? 'OWNER 👑' : 'MEMBER';
+            roleBadge.className = `badge ${role === 'owner' ? 'badge-owner' : 'badge-member'}`;
+
+            generateTools();
+        }
+
+        function logout() {
+            location.reload();
+        }
+
+        // --- TOOLS GENERATOR (120+ ITEMS) ---
+        const categories = [
+            { name: "Fake MLBB", icon: "💎", type: "fake_ml" },
+            { name: "Fake FF", icon: "🔥", type: "fake_ff" },
+            { name: "TikTok Downloader", icon: "🎵", type: "tiktok" },
+            { name: "Instagram Downloader", icon: "📸", type: "ig" },
+            { name: "WhatsApp Spam", icon: "💬", type: "wa" },
+            { name: "Kalkulator Epep", icon: "🔫", type: "calc" },
+            { name: "Cek IP Address", icon: "🌐", type: "ip" },
+            { name: "Generator Kata Sandi", icon: "🔐", type: "pass" },
+            { name: "Edit Foto AI", icon: "🎨", type: "ai" },
+            { name: "Bot WhatsApp", icon: "🤖", type: "bot" },
+            { name: "Top Up Game", icon: "💳", type: "topup" },
+            { name: "Cek Kuota", icon: "📶", type: "kuota" }
+        ];
+
+        function generateTools() {
+            const container = document.getElementById('tools-container');
+            container.innerHTML = '';
+            
+            // Generate 120 tools by looping categories and adding variations
+            let count = 0;
+            for(let i=0; i<10; i++) { // Loop 10 times to create variations
+                categories.forEach(cat => {
+                    count++;
+                    const div = document.createElement('div');
+                    div.className = 'tool-card';
+                    div.onclick = () => openTool(cat, count);
+                    
+                    // Add variation name
+                    let name = cat.name;
+                    if(i > 0) name += ` v${i+1}`; 
+                    
+                    div.innerHTML = `
+                        <span class="tool-icon">${cat.icon}</span>
+                        <div class="tool-title">${name}</div>
+                    `;
+                    container.appendChild(div);
+                });
+            }
+        }
+
+        function filterTools() {
+            const query = document.getElementById('search-tool').value.toLowerCase();
+            const cards = document.querySelectorAll('.tool-card');
+            cards.forEach(card => {
+                const text = card.innerText.toLowerCase();
+                card.style.display = text.includes(query) ? 'block' : 'none';
+            });
+        }
+
+        // --- TOOL LOGIC ---
+        function openTool(cat, id) {
+            const modal = document.getElementById('modal');
+            const title = document.getElementById('modal-title');
+            const body = document.getElementById('modal-body');
+            const result = document.getElementById('modal-result');
+            
+            modal.style.display = 'flex';
+            title.innerText = `${cat.icon} ${cat.name} v${Math.floor((id-1)/categories.length)+1}`;
+            result.style.display = 'none';
+            result.innerText = '';
+
+            // Render specific inputs based on type
+            if(cat.type === 'fake_ml') {
+                body.innerHTML = `
+                    <input type="text" id="t-id" placeholder="ID Player (Contoh: 123456)">
+                    <input type="text" id="t-zone" placeholder="Zone ID (Contoh: 2021)">
+                    <select id="t-item"><option>86 Diamonds</option><option>Weekly Pass</option><option>Starlight</option></select>
+                    <button onclick="runFakeML()">GENERATE BUKTI</button>
+                `;
+            } else if (cat.type === 'fake_ff') {
+                body.innerHTML = `
+                    <input type="text" id="t-uid" placeholder="UID Free Fire">
+                    <select id="t-amount"><option>70 Diamonds</option><option>140 Diamonds</option><option>Membership Mingguan</option></select>
+                    <button onclick="runFakeFF()">GENERATE BUKTI</button>
+                `;
+            } else if (cat.type === 'tiktok') {
+                body.innerHTML = `
+                    <input type="text" placeholder="Tempel Link TikTok di sini...">
+                    <button onclick="showLoadingResult('Mengunduh Video...')">DOWNLOAD NO WM</button>
+                `;
+            } else {
+                body.innerHTML = `
+                    <p>Fitur ini sedang dalam pengembangan untuk versi v${Math.floor((id-1)/categories.length)+1}.</p>
+                    <button onclick="showLoadingResult('Memproses Data...')">JALANKAN TOOLS</button>
+                `;
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        function showLoadingResult(msg) {
+            const result = document.getElementById('modal-result');
+            result.style.display = 'block';
+            result.innerHTML = '<span style="color:yellow">⏳ Sedang memproses...</span>';
+            
+            setTimeout(() => {
+                result.innerHTML = msg + "<br><br>✅ <b>SUKSES!</b><br>Data telah diproses.";
+            }, 2000);
+        }
+
+        // Specific Logic for Fake Tools
+        function runFakeML() {
+            const id = document.getElementById('t-id').value;
+            const item = document.getElementById('t-item').value;
+            if(!id) return alert("Masukkan ID dulu!");
+            
+            const result = document.getElementById('modal-result');
+            result.style.display = 'block';
+            result.innerHTML = `
+                ✅ <b>TRANSAKSI BERHASIL</b><br>
+                --------------------------<br>
+                ID: ${id}<br>
+                Item: ${item}<br>
+                Status: <span style="color:#0f0">SUCCESS</span><br>
+                Waktu: ${new Date().toLocaleTimeString()}<br>
+                --------------------------<br>
+                <i>(Screenshot ini sebagai bukti transfer)</i>
+            `;
+        }
+
+        function runFakeFF() {
+            const uid = document.getElementById('t-uid').value;
+            const amount = document.getElementById('t-amount').value;
+            if(!uid) return alert("Masukkan UID dulu!");
+
+            const result = document.getElementById('modal-result');
+            result.style.display = 'block';
+            result.innerHTML = `
+                ✅ <b>TOP UP SUKSES</b><br>
+                --------------------------<br>
+                UID: ${uid}<br>
+                Diamond: ${amount}<br>
+                Sender: Garena Official<br>
+                Status: <span style="color:#0f0">MASUK</span><br>
+                --------------------------
+            `;
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('modal');
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>
